@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 
@@ -10,6 +11,8 @@ namespace NewMagzineApp.AppCode.BAL
 {
     public class DocumentHelper
     {
+        // TODO: Create new DB for storing pdf and images
+
         protected string connectionString = "";
         public DocumentHelper()
         {
@@ -50,6 +53,7 @@ namespace NewMagzineApp.AppCode.BAL
                     cmd.Parameters.Add("@DocumentType", SqlDbType.VarChar).Value = DocumentType;
                     cmd.Parameters.Add("@DocumentLength", SqlDbType.VarChar).Value = DocumentLength;
                     cmd.Parameters.Add("@DocumentContent", SqlDbType.VarBinary).Value = DocumentContent;
+
                     cmd.Parameters.Add("@DocumentId", SqlDbType.Int);
                     cmd.Parameters["@DocumentId"].Direction = ParameterDirection.Output;
                     conn.Open();
@@ -119,9 +123,13 @@ namespace NewMagzineApp.AppCode.BAL
             }
             return imageSectionId;
         }
-        
-        
-        #endregion
 
+        internal void SavePDFImagePage(Bitmap bitmap)
+        {
+            // Pass orginal doc id and document page number as well to save in db via SP InsertDocumentImages
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

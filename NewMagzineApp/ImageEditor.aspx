@@ -21,7 +21,6 @@
                 onSelectEnd: ExtractImageSectionDetail
             });
         });
-
         function ExtractImageSectionDetail(img, selection) {
             var imagePart = {
                 X1: selection.x1,
@@ -37,11 +36,10 @@
             $("#hdnImagePart").val(imgPartJSON);
         }
 
-
     </script>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="imgEditorForm" runat="server">
         
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <h4>Create Section</h4>

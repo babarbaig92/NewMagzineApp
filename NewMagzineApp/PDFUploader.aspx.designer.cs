@@ -10,60 +10,51 @@
 namespace NewMagzineApp {
     
     
-    public partial class ImageEditor {
+    public partial class PDFUploader {
         
         /// <summary>
-        /// imgEditorForm control.
+        /// pdfUploaderForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm imgEditorForm;
+        protected global::System.Web.UI.HtmlControls.HtmlForm pdfUploaderForm;
         
         /// <summary>
-        /// btnSavePart control.
+        /// fileUploader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSavePart;
+        protected global::System.Web.UI.WebControls.FileUpload fileUploader;
         
         /// <summary>
-        /// photo control.
+        /// btnSaveFile control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlImage photo;
+        protected global::System.Web.UI.WebControls.Button btnSaveFile;
         
         /// <summary>
-        /// hdnImagePart control.
+        /// lblmessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnImagePart;
+        protected global::System.Web.UI.WebControls.Label lblmessage;
         
         /// <summary>
-        /// hdnOriginalImageId control.
+        /// savedFilesList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnOriginalImageId;
-        
-        /// <summary>
-        /// hdnOriginalImageName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnOriginalImageName;
+        protected global::System.Web.UI.WebControls.DataList savedFilesList;
     }
 }

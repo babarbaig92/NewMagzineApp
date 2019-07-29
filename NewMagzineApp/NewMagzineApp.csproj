@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPdf, Version=5.2.0.22321, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPdf.5.2.0.1\lib\net40\IronPdf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -82,8 +85,10 @@
     <Content Include="css\imgareaselect-animated.css" />
     <Content Include="css\imgareaselect-default.css" />
     <Content Include="css\imgareaselect-deprecated.css" />
+    <Content Include="ExtractImages.aspx" />
     <Content Include="ImageEditor.aspx" />
     <Content Include="images\1.jpg" />
+    <Content Include="PDFUploader.aspx" />
     <Content Include="scripts\bootstrap.bundle.js" />
     <Content Include="scripts\bootstrap.bundle.min.js" />
     <Content Include="scripts\bootstrap.js" />
@@ -137,12 +142,26 @@
   <ItemGroup>
     <Compile Include="AppCode\BAL\DocumentHelper.cs" />
     <Compile Include="AppCode\DTO\ImagePart.cs" />
+    <Compile Include="ExtractImages.aspx.cs">
+      <DependentUpon>ExtractImages.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExtractImages.aspx.designer.cs">
+      <DependentUpon>ExtractImages.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ImageEditor.aspx.cs">
       <DependentUpon>ImageEditor.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ImageEditor.aspx.designer.cs">
       <DependentUpon>ImageEditor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PDFUploader.aspx.cs">
+      <DependentUpon>PDFUploader.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDFUploader.aspx.designer.cs">
+      <DependentUpon>PDFUploader.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -162,6 +181,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MagzineAppFiles\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
