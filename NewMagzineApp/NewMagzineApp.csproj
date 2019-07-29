@@ -142,6 +142,7 @@
   <ItemGroup>
     <Compile Include="AppCode\BAL\DocumentHelper.cs" />
     <Compile Include="AppCode\DTO\ImagePart.cs" />
+    <Compile Include="AppCode\DTO\PageImage.cs" />
     <Compile Include="ExtractImages.aspx.cs">
       <DependentUpon>ExtractImages.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

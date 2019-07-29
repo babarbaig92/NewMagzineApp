@@ -31,12 +31,30 @@ namespace NewMagzineApp {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl imageContainer;
         
         /// <summary>
-        /// photo control.
+        /// hdnImageId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlImage photo;
+        protected global::System.Web.UI.WebControls.HiddenField hdnImageId;
+        
+        /// <summary>
+        /// hdnImageName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnImageName;
+        
+        /// <summary>
+        /// hdnTransferImageForEditing control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton hdnTransferImageForEditing;
     }
 }

@@ -57,7 +57,8 @@ namespace NewMagzineApp
                     sb.AppendFormat("Unable to save file <br/> {0}", ex.Message);
                 }
             }
-            lblmessage.Text = sb.ToString();
+            //lblmessage.Text = sb.ToString();
+            Response.Redirect("PDFUploader.aspx");
         }
 
 
@@ -80,7 +81,12 @@ namespace NewMagzineApp
                 }
             }
         }
-
+        protected void btnRedirectToPDFProcessor_Click(object sender, ImageClickEventArgs e)
+        {
+            string documentId = hdnDocumentId.Value;
+            string documentName = hdnDocumentName.Value;
+            Response.Redirect("ExtractImages.aspx?DocumentId=" + documentId + "&DocumentName=" + documentName);
+        }
 
 
 

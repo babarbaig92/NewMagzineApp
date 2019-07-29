@@ -16,7 +16,8 @@
     <script type="text/javascript" src="scripts/jquery.imgareaselect.pack.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('img#photo').imgAreaSelect({
+            var imgId = $("#hdnOriginalImageId").val();
+            $('img#' + imgId).imgAreaSelect({
                 handles: true,
                 onSelectEnd: ExtractImageSectionDetail
             });
@@ -35,7 +36,6 @@
             var imgPartJSON = JSON.stringify(imagePart);
             $("#hdnImagePart").val(imgPartJSON);
         }
-
     </script>
 </head>
 <body>
@@ -52,8 +52,8 @@
                 </ul>
             </div>
         </nav>
-        <div class="container-fluid">
-            <img src="images/1.jpg" alt="test" runat="server" id="photo" />
+        <div class="container" id="imageContainer" runat="server">
+            <%--<img src="images/1.jpg" alt="test" runat="server" id="photo" />--%>
         </div>
         <asp:HiddenField ID="hdnImagePart" runat="server" Value="" />
         <asp:HiddenField ID="hdnOriginalImageId" runat="server" Value="" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewMagzineApp.AppCode.DTO;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -79,6 +80,7 @@ namespace NewMagzineApp.AppCode.BAL
                     conn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
                     document.Load(reader);
+                    conn.Close();
                 }
             }
 
@@ -124,12 +126,58 @@ namespace NewMagzineApp.AppCode.BAL
             return imageSectionId;
         }
 
-        internal void SavePDFImagePage(Bitmap bitmap)
+        internal List<int> SavePDFImagePage(List<PageImage> pageImages)
         {
-            // Pass orginal doc id and document page number as well to save in db via SP InsertDocumentImages
-            throw new NotImplementedException();
+            List<int> pageImageIds = new List<int>();
+            foreach (PageImage page in pageImages)
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = "InsertDocumentImages";
+                        cmd.Parameters.Add("@OriginalDocumentId", SqlDbType.Int).Value = page.OriginalDocumentId;
+                        cmd.Parameters.Add("@DocumentPageNumber", SqlDbType.VarChar).Value = page.DocumentPageNumber;
+                        cmd.Parameters.Add("@PageBinary", SqlDbType.VarBinary).Value = page.PageBinaryData;
+
+                        cmd.Parameters.Add("@DocumentImageId", SqlDbType.Int);
+                        cmd.Parameters["@DocumentImageId"].Direction = ParameterDirection.Output;
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        pageImageIds.Add(Convert.ToInt32(cmd.Parameters["@DocumentImageId"].Value));
+                        conn.Close();
+                    }
+                }
+            }
+            return pageImageIds;
         }
 
+        internal byte[] GetPageImageForSectionExtraction(int pageImageId)
+        {
+            DataTable pageImageContents = new DataTable();
+            byte[] imageByte = null;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "GetPageImageById";
+                    cmd.Parameters.Add("@PageImageId", SqlDbType.Int).Value = pageImageId;
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    pageImageContents.Load(reader);
+                    conn.Close();
+                }
+            }
+            if (pageImageContents.Rows.Count > 0)
+            {
+                imageByte = (byte[])pageImageContents.Rows[0]["PageBinary"];
+            }
+            return imageByte;
+        }
         #endregion
     }
 }
