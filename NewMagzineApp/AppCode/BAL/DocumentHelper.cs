@@ -178,6 +178,79 @@ namespace NewMagzineApp.AppCode.BAL
             }
             return imageByte;
         }
+
+        internal byte[] GetMagzinePage(int documentId, int pageNumber)
+        {
+            // Can use it to get all page images based on document id. But should we?
+            DataTable page = new DataTable();
+            byte[] imageByte = null;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "GetDocumentPage";
+                    cmd.Parameters.Add("@DocumentId", SqlDbType.Int).Value = documentId;
+                    cmd.Parameters.Add("@PageNumber", SqlDbType.Int).Value = pageNumber;
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    page.Load(reader);
+                    conn.Close();
+                }
+            }
+            if (page.Rows.Count > 0)
+            {
+                // get document image id and its binary.
+                // use documentt image id to get its sections from section table
+                imageByte = (byte[])page.Rows[0]["PageBinary"];
+            }
+            return imageByte;
+        }
+        internal List<ImagePart> GetMagzinePageSections(int pageId)
+        {
+            // Can use it to get all page images based on document id. But should we?
+            DataTable page = new DataTable();
+            List<ImagePart> imageParts = new List<ImagePart>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "GetMagzinePageSections";
+                    cmd.Parameters.Add("@pageId", SqlDbType.Int).Value = pageId;
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    page.Load(reader);
+                    conn.Close();
+                }
+            }
+            if (page.Rows.Count > 0)
+            {
+                // get document image id and its binary.
+                // use documentt image id to get its sections from section table
+
+                foreach(DataRow imageSection in page.Rows)
+                {
+                    ImagePart section = new ImagePart();
+                    section.ImagePartName = Convert.ToString(imageSection["ImagePartName"]);
+                    section.ImagePartByte = (byte[])imageSection["ImagePartByte"];
+                    section.X1 = Convert.ToInt32(imageSection["CoordX1"]);
+                    section.X2 = Convert.ToInt32(imageSection["CoordX2"]);
+                    section.Y1 = Convert.ToInt32(imageSection["CoordY1"]);
+                    section.Y2 = Convert.ToInt32(imageSection["CoordY2"]);
+                    section.Width = Convert.ToInt32(imageSection["SectionWidth"]);
+                    section.Height = Convert.ToInt32(imageSection["SectionHeight"]);
+
+                    imageParts.Add(section);
+                }
+            }
+            return imageParts;
+        }
+
+
+
         #endregion
     }
 }

@@ -31,7 +31,7 @@ namespace NewMagzineApp
             {
                 LoadImageFromDB(); // Load Image from DB Before Editing
             }
-
+            LoadImageIntoPage();
         }
         private void GetParameters()
         {
@@ -53,16 +53,19 @@ namespace NewMagzineApp
             //    pageImage = new Bitmap(ms);
             //}
             //pageImage.Save(pageImageLocation + originalImageName, ImageFormat.Png);
-            LoadImageIntoPage();
         }
 
         private void LoadImageIntoPage()
         {
-            // check if file exist then load in img 
-            HtmlImage img = new HtmlImage();
-            img.ID = hdnOriginalImageId.Value;
-            img.Src = "MagzineAppFiles\\" + originalImageName;
-            imageContainer.Controls.Add(img);
+            if (File.Exists(pageImageLocation + originalImageName))
+            {
+                HtmlImage img = new HtmlImage();
+                img.ID = hdnOriginalImageId.Value;
+                img.Src = "MagzineAppFiles\\" + originalImageName;
+                img.Width = 700;
+                img.Height = 900;
+                imageContainer.Controls.Add(img);
+            }
         }
 
         #region Image Section Saving
