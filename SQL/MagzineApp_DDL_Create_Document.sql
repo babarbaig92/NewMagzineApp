@@ -7,7 +7,8 @@ IF NOT EXISTS (SELECT * FROM dbo.sysobjects where id = object_id(N'dbo.[Document
 			DocumentType nvarchar(100),
 			DocumentLength nvarchar(200),
 			UploadDate DateTime,
-			DocumentContent varbinary (max)
+			DocumentContent varbinary (max),
+			HasGeneratedImages bit,
 			PRIMARY KEY (DocumentId)
 		)
 	END

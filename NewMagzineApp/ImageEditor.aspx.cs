@@ -92,6 +92,23 @@ namespace NewMagzineApp
 
         private byte[] ExtractImageSection(Bitmap originalMap, ImagePart imgPart)
         {
+            Bitmap imageSection = new Bitmap(imgPart.Width, imgPart.Height);
+
+            int top = Math.Min(imgPart.Y1, imgPart.Y2);
+            int bottom = Math.Max(imgPart.Y1, imgPart.Y2);
+            int left = Math.Min(imgPart.X1, imgPart.X2);
+            int right = Math.Max(imgPart.X1, imgPart.X2);
+
+            Rectangle cloneRect = Rectangle.FromLTRB(left, top, right, bottom);
+            Graphics g = Graphics.FromImage(imageSection);
+
+            // Draw the given area (section) of the source image
+            // at location 0,0 on the empty bitmap (imageSection)
+            //g.DrawImage(originalMap, 0, 0, cloneRect, GraphicsUnit.Pixel);
+
+            g.DrawImage(originalMap, cloneRect, 0, 0, imgPart.Width, imgPart.Height, GraphicsUnit.Pixel);
+
+            /*
             int top = Math.Min(imgPart.Y1, imgPart.Y2);
             int bottom = Math.Max(imgPart.Y1, imgPart.Y2);
             int left = Math.Min(imgPart.X1, imgPart.X2);
@@ -99,7 +116,9 @@ namespace NewMagzineApp
 
             Rectangle cloneRect = Rectangle.FromLTRB(left, top, right, bottom);
             System.Drawing.Imaging.PixelFormat pixelFormat = originalMap.PixelFormat;
-            Bitmap imageSection = originalMap.Clone(cloneRect, pixelFormat);
+            Bitmap imageSection = (Bitmap)originalMap.Clone(cloneRect, pixelFormat);*/
+
+            imageSection.Save(pageImageLocation + imgPart.ImagePartName, ImageFormat.Png);
             byte[] imageSectionByte = ConvertBitmapIntoByte(imageSection);
             return imageSectionByte;
         }

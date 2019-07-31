@@ -68,7 +68,7 @@ namespace NewMagzineApp
 
             DocumentHelper documentHelper = new DocumentHelper();
             return documentHelper.InsertDocument(fileUploader.PostedFile.FileName, fileUploader.PostedFile.ContentType,
-                Convert.ToString(fileBinaryContent.Length), fileBinaryContent);
+                Convert.ToString(fileBinaryContent.Length), fileBinaryContent, false);
         }
 
         private byte[] GetFileBinay(Stream inputStream)
@@ -85,7 +85,8 @@ namespace NewMagzineApp
         {
             string documentId = hdnDocumentId.Value;
             string documentName = hdnDocumentName.Value;
-            Response.Redirect("ExtractImages.aspx?DocumentId=" + documentId + "&DocumentName=" + documentName);
+            string hasImages = hdnHasImages.Value;
+            Response.Redirect("ExtractImages.aspx?DocumentId=" + documentId + "&DocumentName=" + documentName + "&HasImages=" + hasImages);
         }
 
 

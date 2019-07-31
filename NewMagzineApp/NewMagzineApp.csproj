@@ -88,6 +88,7 @@
     <Content Include="ExtractImages.aspx" />
     <Content Include="ImageEditor.aspx" />
     <Content Include="images\1.jpg" />
+    <Content Include="MagzineViewer.aspx" />
     <Content Include="PDFUploader.aspx" />
     <Content Include="scripts\bootstrap.bundle.js" />
     <Content Include="scripts\bootstrap.bundle.min.js" />
@@ -156,6 +157,13 @@
     </Compile>
     <Compile Include="ImageEditor.aspx.designer.cs">
       <DependentUpon>ImageEditor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MagzineViewer.aspx.cs">
+      <DependentUpon>MagzineViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MagzineViewer.aspx.designer.cs">
+      <DependentUpon>MagzineViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="PDFUploader.aspx.cs">
       <DependentUpon>PDFUploader.aspx</DependentUpon>

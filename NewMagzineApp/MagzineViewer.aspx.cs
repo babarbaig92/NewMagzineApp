@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -25,12 +26,12 @@ namespace NewMagzineApp
             pageImageLocation = Server.MapPath(" ") + "\\MagzineAppFiles\\";
             int documentId = 1;
             int pageNumber = 1;
-            int originalImageId = 48; // id of image whose sections will be fetched            
+            int originalImageId = 64; // id of image whose sections will be fetched            
             byte[] mainPage = GetMagzinePage(documentId, pageNumber);
             List<ImagePart> imageSections = GetMagzinePageSections(originalImageId);
 
+            CleanDirectory(); // remove any already placed files.
             CreateMapAreaForImagePage(mainPage, imageSections);
-
         }
 
         private void CreateMapAreaForImagePage(byte[] mainPage, List<ImagePart> imageSections)
@@ -43,26 +44,30 @@ namespace NewMagzineApp
             mainImage.ID = "img_" + imageSections[0].OriginalImageId;
             mainImage.Src = "MagzineAppFiles\\" + mainPageName;
             mainImage.Attributes.Add("alt", "Main Image");
-            mainImage.Attributes.Add("usemap", "pageMap");
-            
-
-            // HERE LOAD ALL IMAGE SECTIONS INTO pageImageLocation Path Folder
+            mainImage.Attributes.Add("usemap", "#pageMap");
 
             HtmlGenericControl map = new HtmlGenericControl("map");
-            map.Attributes.Add("name", "mapname");
-            //HtmlGenericControl area = new HtmlGenericControl("area");
-            //area.Attributes.Add("shape", "rect");
-            //area.Attributes.Add("coords", "114,346, 150, 100");
-            //area.Attributes.Add("href", "MagzineAppFiles/1_a.png");
-            //area.Attributes.Add("alttext", "image" + counter);
-            //area.Attributes.Add("target", "_blank");
-            //map.Controls.Add(area);
+            map.Attributes.Add("name", "pageMap");
 
+            foreach(ImagePart imgPart in imageSections)
+            {
+                StringBuilder coordinateBuilder = new StringBuilder();
+                coordinateBuilder.Append(imgPart.X1).Append(",").Append(imgPart.Y1).Append(",")
+                    .Append(imgPart.X2).Append(",").Append(imgPart.Y2);
+                string fileLocation = "MagzineAppFiles\\" + imgPart.ImagePartName;
+                System.IO.File.WriteAllBytes(pageImageLocation + imgPart.ImagePartName, imgPart.ImagePartByte); //place all section file on server
 
+                HtmlGenericControl area = new HtmlGenericControl("area");
+                area.Attributes.Add("shape", "rect");
+                area.Attributes.Add("coords", coordinateBuilder.ToString());
+                area.Attributes.Add("href", fileLocation);
+                area.Attributes.Add("alttext", "image_" + imgPart.OriginalImageId);
+                area.Attributes.Add("target", "_blank");
+                map.Controls.Add(area);
+            }
             imageContainer.Controls.Add(mainImage);
             imageContainer.Controls.Add(map);
         }
-
         private List<ImagePart> GetMagzinePageSections(int originalImageId)
         {
             DocumentHelper dh = new DocumentHelper();
@@ -74,8 +79,11 @@ namespace NewMagzineApp
             DocumentHelper dh = new DocumentHelper();
             return dh.GetMagzinePage(documentId, pageNumber);
         }
-
-
-
+        private void CleanDirectory()
+        {
+            string[] filePaths = Directory.GetFiles(pageImageLocation);
+            foreach (string filePath in filePaths)
+                File.Delete(filePath);
+        }
     }
 }

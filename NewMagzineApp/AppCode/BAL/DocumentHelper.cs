@@ -40,7 +40,7 @@ namespace NewMagzineApp.AppCode.BAL
             }
             return documents;
         }
-        internal int InsertDocument(string DocumentName, string DocumentType, string DocumentLength, byte[] DocumentContent)
+        internal int InsertDocument(string DocumentName, string DocumentType, string DocumentLength, byte[] DocumentContent, bool hasGeneratedImages)
         {
             int documentId = 0;
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -54,6 +54,7 @@ namespace NewMagzineApp.AppCode.BAL
                     cmd.Parameters.Add("@DocumentType", SqlDbType.VarChar).Value = DocumentType;
                     cmd.Parameters.Add("@DocumentLength", SqlDbType.VarChar).Value = DocumentLength;
                     cmd.Parameters.Add("@DocumentContent", SqlDbType.VarBinary).Value = DocumentContent;
+                    cmd.Parameters.Add("@HasGeneratedImages", SqlDbType.Bit).Value = hasGeneratedImages;
 
                     cmd.Parameters.Add("@DocumentId", SqlDbType.Int);
                     cmd.Parameters["@DocumentId"].Direction = ParameterDirection.Output;
@@ -137,7 +138,7 @@ namespace NewMagzineApp.AppCode.BAL
                     {
                         cmd.Connection = conn;
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.CommandText = "InsertDocumentImages";
+                        cmd.CommandText = "InsertDocumentImages"; // Will also update the Document table's HasGeneratedImages Bit.
                         cmd.Parameters.Add("@OriginalDocumentId", SqlDbType.Int).Value = page.OriginalDocumentId;
                         cmd.Parameters.Add("@DocumentPageNumber", SqlDbType.VarChar).Value = page.DocumentPageNumber;
                         cmd.Parameters.Add("@PageBinary", SqlDbType.VarBinary).Value = page.PageBinaryData;
@@ -206,6 +207,39 @@ namespace NewMagzineApp.AppCode.BAL
                 imageByte = (byte[])page.Rows[0]["PageBinary"];
             }
             return imageByte;
+        }
+        internal List<PageImage> LoadPDFPageImages(int documentId)
+        {
+            DataTable page = new DataTable();
+            List<PageImage> pageImages = new List<PageImage>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "LoadPDFPageImages";
+                    cmd.Parameters.Add("@DocumentId", SqlDbType.Int).Value = documentId;
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    page.Load(reader);
+                    conn.Close();
+                }
+            }
+            if (page.Rows.Count > 0)
+            {
+                foreach(DataRow dr in page.Rows)
+                {
+                    PageImage pageImage = new PageImage();
+                    pageImage.DocumentImageId = Convert.ToInt32(dr["DocumentImageId"]);
+                    pageImage.OriginalDocumentId = Convert.ToInt32(dr["OriginalDocumentId"]);
+                    pageImage.DocumentPageNumber = Convert.ToInt32(dr["DocumentPageNumber"]);
+                    pageImage.PageCreationDate = Convert.ToDateTime(dr["PageCreationDate"]);
+                    pageImage.PageBinaryData = (byte[])(dr["PageBinary"]);
+                    pageImages.Add(pageImage);
+                }
+            }
+            return pageImages;
         }
         internal List<ImagePart> GetMagzinePageSections(int pageId)
         {

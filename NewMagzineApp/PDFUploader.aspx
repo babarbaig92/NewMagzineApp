@@ -11,9 +11,10 @@
     <link href="Content/bootstrap.css" rel="stylesheet" />
 
     <script type="text/javascript">
-        function ProcessPDF(documentId, documentName) {
+        function ProcessPDF(documentId, documentName, hasImages) {
             document.getElementById("hdnDocumentId").value = documentId;
             document.getElementById("hdnDocumentName").value = documentName;
+            document.getElementById("hdnHasImages").value = hasImages;
             document.getElementById("btnRedirectToPDFProcessor").click();
         }
     </script>
@@ -55,7 +56,7 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <b>ID: </b><a href="javascript:ProcessPDF('<%# Eval("DocumentId")%>','<%# Eval("DocumentName") %>');"><span><%# Eval("DocumentId") %></span></a><br />
+                                        <b>ID: </b><a href="javascript:ProcessPDF('<%# Eval("DocumentId")%>','<%# Eval("DocumentName") %>','<%# Eval("HasGeneratedImages") %>');"><span><%# Eval("DocumentId") %></span></a><br />
                                         <b>File Name: </b><span><%# Eval("DocumentName") %></span><br />
                                         <b>Upload Date: </b><span><%# Eval("UploadDate")%></span><br />
                                     </td>
@@ -68,6 +69,7 @@
         </div>
         <asp:HiddenField ID="hdnDocumentId" Value="" runat="server" />
         <asp:HiddenField ID="hdnDocumentName" Value="" runat="server" />
+        <asp:HiddenField ID="hdnHasImages" Value="" runat="server" />
         <asp:ImageButton ID="btnRedirectToPDFProcessor" Style="display: none;" OnClick="btnRedirectToPDFProcessor_Click" runat="server" />
     </form>
 </body>

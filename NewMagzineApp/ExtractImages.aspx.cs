@@ -19,6 +19,7 @@ namespace NewMagzineApp
         private int DocumentId = 0;
         private string DocumentName = "";
         private string filePath = "";
+        private bool hasImages = false;
         protected void Page_Load(object sender, EventArgs e)
         {            
             // Do not generate pages if already exists (add bit in document table to check if pages have been generated already)
@@ -26,7 +27,7 @@ namespace NewMagzineApp
             filePath = Server.MapPath(" ") + "\\MagzineAppFiles\\"; // Temporary storage location for file that is fetched from db to convert into images
             DocumentId = Convert.ToInt32(Request.Params.Get("DocumentId"));
             DocumentName = Convert.ToString(Request.Params.Get("DocumentName"));
-
+            hasImages = Convert.ToBoolean(Request.Params.Get("HasImages"));
             if(!Page.IsPostBack)
             {
                 SavePDFIntoImages();
@@ -36,11 +37,55 @@ namespace NewMagzineApp
 
         private void SavePDFIntoImages()
         {
-            Bitmap[] pdfPages = GetPageImages();
+            List<Bitmap> pdfPages = new List<Bitmap>();
+            List<PageImage> pageImages;
+            List<int> pageImageIds;
+
+            if (!hasImages)
+            {
+                CreatePDFPageImages(out pdfPages, out pageImages, out pageImageIds);
+            }
+            else
+            {
+                LoadPDFPageImages(pdfPages, out pageImages, out pageImageIds);
+            }
+
+            
+            CleanDirectory();
+
+
+            DisplayPDFImages(pdfPages, pageImages, pageImageIds);
+        }
+
+        private void LoadPDFPageImages(List<Bitmap> pdfPages, out List<PageImage> pageImages, out List<int> pageImageIds)
+        {
+            DocumentHelper dh = new DocumentHelper();
+            List<PageImage> documentPageImages = dh.LoadPDFPageImages(DocumentId);
+            pageImageIds = new List<int>();
+            pageImages = new List<PageImage>();
+            foreach (PageImage page in documentPageImages)
+            {
+                pageImages = documentPageImages;
+                pageImageIds.Add(page.DocumentImageId);
+                Bitmap bmp;
+                using (var ms = new MemoryStream(page.PageBinaryData))
+                {
+                    bmp = new Bitmap(ms);
+                }
+                pdfPages.Add(bmp);
+            }
+
+
+
+        }
+
+        private void CreatePDFPageImages(out List<Bitmap> pdfPages, out List<PageImage> pageImages, out List<int> pageImageIds)
+        {
+            pdfPages = GetPageImages();
             DocumentHelper documentHelper = new DocumentHelper();
 
-            List<PageImage> pageImages = new List<PageImage>();
-            for(int pageNumber = 0; pageNumber < pdfPages.Length; pageNumber++)
+            pageImages = new List<PageImage>();
+            for (int pageNumber = 0; pageNumber < pdfPages.Count; pageNumber++)
             {
                 PageImage page = new PageImage();
                 byte[] pageByte = ConvertBitmapIntoByte(pdfPages[pageNumber]);
@@ -50,12 +95,15 @@ namespace NewMagzineApp
                 page.DocumentImageName = Guid.NewGuid().ToString() + ".png";
                 pageImages.Add(page);
             }
-            List<int> pageImageIds = documentHelper.SavePDFImagePage(pageImages);
-            CleanDirectory();
+            pageImageIds = documentHelper.SavePDFImagePage(pageImages);
+        }
+
+        private void DisplayPDFImages(List<Bitmap> pdfPages, List<PageImage> pageImages, List<int> pageImageIds)
+        {
 
             #region  Display Image Section on Original Image
             var lineBreak = new HtmlGenericControl("br");
-            for (int counter = 0; counter < pdfPages.Length; counter++)
+            for (int counter = 0; counter < pdfPages.Count; counter++)
             {
                 HtmlImage img = new HtmlImage();
                 img.Width = 700;
@@ -66,9 +114,9 @@ namespace NewMagzineApp
                 pdfPages[counter].Save(ms, ImageFormat.Png);
                 var base64Data = Convert.ToBase64String(ms.ToArray());
                 img.Src = "data:image/Png;base64," + base64Data;
-                img.Attributes.Add("onclick", "javascript:TransferImageForEditing('" + pageImageIds[counter] + "','" + pageImages[counter].DocumentImageName  + "');");
+                img.Attributes.Add("onclick", "javascript:TransferImageForEditing('" + pageImageIds[counter] + "','" + pageImages[counter].DocumentImageName + "');");
                 //img.Attributes.Add("usemap", "#mapname");
-                
+
 
                 var h3 = new HtmlGenericControl("h3");
                 h3.InnerHtml = "Page " + (counter + 1);
@@ -91,13 +139,7 @@ namespace NewMagzineApp
             #endregion
         }
 
-        private void CleanDirectory()
-        {
-            string[] filePaths = Directory.GetFiles(filePath);
-            foreach (string filePath in filePaths)
-                File.Delete(filePath);
-        }
-        private Bitmap[] GetPageImages()
+        private List<Bitmap> GetPageImages()
         {
             // Load document related to docid in server path So that images could be generated
             GetPDFDocumentFromDB();
@@ -112,7 +154,14 @@ namespace NewMagzineApp
             //pdf.RasterizeToImageFiles(filePath + "thumbnail_*.jpg", 100, 80);
             //Extract all pages as System.Drawing.Bitmap objects
             Bitmap[] pageImages = pdf.ToBitmap();
-            return pageImages;
+
+            List<Bitmap> imageList = new List<Bitmap>();
+            for(int counter = 0; counter < pageImages.Length; counter++)
+            {
+                imageList.Add(pageImages[counter]);
+            }
+
+            return imageList;
         }
         private void GetPDFDocumentFromDB()
         {
@@ -129,6 +178,12 @@ namespace NewMagzineApp
         protected void hdnTransferImageForEditing_Click(object sender, ImageClickEventArgs e)
         {
             Response.Redirect("ImageEditor.aspx?imagePageId=" + hdnImageId.Value + "&imagePageName=" + hdnImageName.Value);
+        }
+        private void CleanDirectory()
+        {
+            string[] filePaths = Directory.GetFiles(filePath);
+            foreach (string filePath in filePaths)
+                File.Delete(filePath);
         }
     }
 }

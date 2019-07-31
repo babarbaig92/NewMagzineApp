@@ -16,11 +16,12 @@ CREATE PROCEDURE InsertDocument
 	@DocumentType as varchar(100) = '',
 	@DocumentLength as varchar (200) = '',
 	@DocumentContent as varbinary(max) = NULL,
+	@HasGeneratedImages as bit = 0,
 	@DocumentId int = 0 OUTPUT
 AS
 BEGIN
-	INSERT INTO Document(DocumentName, DocumentType, DocumentLength, DocumentContent, UploadDate)
-	VALUES (@DocumentName, @DocumentType, @DocumentLength, @DocumentContent, GETDATE())
+	INSERT INTO Document(DocumentName, DocumentType, DocumentLength, UploadDate, DocumentContent, HasGeneratedImages)
+	VALUES (@DocumentName, @DocumentType, @DocumentLength, GETDATE(), @DocumentContent, @HasGeneratedImages)
 
 	SELECT @DocumentId = SCOPE_IDENTITY()
 END

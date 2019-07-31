@@ -26,7 +26,7 @@ BEGIN
 	DECLARE @where nvarchar(2000) = ''
 	DECLARE @from nvarchar(2000) = ''
 	DECLARE @bitAnd bit = 0
-	SELECT @select = N'SELECT DocumentId, DocumentName, UploadDate '
+	SELECT @select = N'SELECT DocumentId, DocumentName, UploadDate, HasGeneratedImages '
 	SELECT @from = N' FROM Document'
 
 	IF @FromDate <> ''

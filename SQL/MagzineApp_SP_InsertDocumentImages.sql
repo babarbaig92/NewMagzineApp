@@ -23,5 +23,12 @@ BEGIN
 	VALUES (@OriginalDocumentId, @DocumentPageNumber, GETDATE(), @PageBinary)
 
 	SELECT @DocumentImageId = SCOPE_IDENTITY()
+
+	-- Update Document table because the document has images now
+
+	UPDATE Document
+	SET HasGeneratedImages = 1
+	WHERE DocumentId = @OriginalDocumentId
+
 END
 GO
