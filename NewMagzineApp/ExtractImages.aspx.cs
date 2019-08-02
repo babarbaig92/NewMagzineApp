@@ -38,17 +38,17 @@ namespace NewMagzineApp
         private void SavePDFIntoImages()
         {
             List<Bitmap> pdfPages = new List<Bitmap>();
-            List<PageImage> pageImages;
-            List<int> pageImageIds;
+            List<PageImage> pageImages = new List<PageImage>();
+            List<int> pageImageIds = new List<int>();
 
-            if (!hasImages)
-            {
+            //if (!hasImages)
+            //{
                 CreatePDFPageImages(out pdfPages, out pageImages, out pageImageIds);
-            }
-            else
-            {
-                LoadPDFPageImages(pdfPages, out pageImages, out pageImageIds);
-            }
+            //}
+            //else
+            //{
+              //  LoadPDFPageImages(pdfPages, out pageImages, out pageImageIds);
+            //}
 
             
             CleanDirectory();
@@ -60,12 +60,10 @@ namespace NewMagzineApp
         private void LoadPDFPageImages(List<Bitmap> pdfPages, out List<PageImage> pageImages, out List<int> pageImageIds)
         {
             DocumentHelper dh = new DocumentHelper();
-            List<PageImage> documentPageImages = dh.LoadPDFPageImages(DocumentId);
+            pageImages = dh.LoadPDFPageImages(DocumentId);
             pageImageIds = new List<int>();
-            pageImages = new List<PageImage>();
-            foreach (PageImage page in documentPageImages)
+            foreach (PageImage page in pageImages)
             {
-                pageImages = documentPageImages;
                 pageImageIds.Add(page.DocumentImageId);
                 Bitmap bmp;
                 using (var ms = new MemoryStream(page.PageBinaryData))
@@ -74,9 +72,6 @@ namespace NewMagzineApp
                 }
                 pdfPages.Add(bmp);
             }
-
-
-
         }
 
         private void CreatePDFPageImages(out List<Bitmap> pdfPages, out List<PageImage> pageImages, out List<int> pageImageIds)
@@ -110,10 +105,16 @@ namespace NewMagzineApp
                 img.Height = 900;
                 img.ID = "img_" + pageImageIds[counter];
 
-                MemoryStream ms = new MemoryStream();
-                pdfPages[counter].Save(ms, ImageFormat.Png);
-                var base64Data = Convert.ToBase64String(ms.ToArray());
-                img.Src = "data:image/Png;base64," + base64Data;
+                // PDF
+                //MemoryStream ms = new MemoryStream();
+                //pdfPages[counter].Save(ms, ImageFormat.Png);
+                //var base64Data = Convert.ToBase64String(ms.ToArray());
+
+                pdfPages[counter].Save(filePath + pageImages[counter].DocumentImageName);
+
+                //img.Src = "data:image/Png;base64,"; //+ base64Data;
+
+                img.Src = "MagzineAppFiles\\" + pageImages[counter].DocumentImageName;
                 img.Attributes.Add("onclick", "javascript:TransferImageForEditing('" + pageImageIds[counter] + "','" + pageImages[counter].DocumentImageName + "');");
                 //img.Attributes.Add("usemap", "#mapname");
 

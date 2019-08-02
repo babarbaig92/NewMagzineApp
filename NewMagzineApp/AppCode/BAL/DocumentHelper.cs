@@ -283,7 +283,36 @@ namespace NewMagzineApp.AppCode.BAL
             return imageParts;
         }
 
-
+        //internal List<DocumentInfo> GetDocInfoForViewer()
+        //{
+        //    DataTable documents = new DataTable();
+        //    List<DocumentInfo> docInfo = new List<DocumentInfo>();
+        //    using (SqlConnection conn = new SqlConnection(connectionString))
+        //    {
+        //        using (SqlCommand cmd = new SqlCommand())
+        //        {
+        //            cmd.Connection = conn;
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.CommandText = "GetDocInfoForViewer";
+        //            conn.Open();
+        //            SqlDataReader reader = cmd.ExecuteReader();
+        //            documents.Load(reader);
+        //            conn.Close();
+        //        }
+        //    }
+        //    if (documents.Rows.Count > 0)
+        //    {
+        //        foreach (DataRow dr in documents.Rows)
+        //        {
+        //            DocumentInfo doc = new DocumentInfo();
+        //            doc.DocumentId = Convert.ToInt32(dr["DocumentId"]);
+        //            doc.DocumentName = Convert.ToString(dr["DocumentName"]);
+        //            doc.UploadDate = Convert.ToDateTime(dr["UploadDate"]);                    
+        //            docInfo.Add(doc);
+        //        }
+        //    }
+        //    return docInfo;
+        //}
 
         #endregion
     }

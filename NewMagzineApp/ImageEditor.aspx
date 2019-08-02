@@ -11,25 +11,98 @@
 
     <link href="Content/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/imgareaselect-default.css" />
-
     <script type="text/javascript" src="scripts/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.imgareaselect.pack.js"></script>
+
+
+<%--    <script src="scripts/cropperjs/src/js/cropper.js"></script>
+    <link href="scripts/cropperjs/src/css/cropper.css" rel="stylesheet" />
+    <script src="scripts/jquery-cropper/dist/jquery-cropper.js"></script>--%>
+
     <script type="text/javascript">
         $(document).ready(function () {
+            
             var imgId = $("#hdnOriginalImageId").val();
+            var originalHeight = imgId.naturalHeight;
+            var originalWidth = imgId.naturalWidth;
+
+
+            // Show original size in console to make sure is correct (optional):
+            console.log('IMG width: ' + originalWidth + ', heigth: ' + originalHeight)
+
             $('img#' + imgId).imgAreaSelect({
+                //aspectRatio: '1:1',
                 handles: true,
+                fadeSpeed: 200,
+                imageHeight: originalHeight,
+                imageWidth: originalWidth,
                 onSelectEnd: ExtractImageSectionDetail
             });
+
+            //$image.cropper({
+            //    aspectRatio: 16 / 9,
+            //    crop: function (event) {
+            //        console.log(event.detail.x);
+            //        console.log(event.detail.y);
+            //        console.log(event.detail.width);
+            //        console.log(event.detail.height);
+            //        console.log(event.detail.rotate);
+            //        console.log(event.detail.scaleX);
+            //        console.log(event.detail.scaleY);
+            //    }
+            //});
+
+            //// Get the Cropper.js instance after initialized
+            //var cropper = $image.data('cropper');
+
+
+
+
+            $("#btnSavePart").on("click", function () {
+                //                GetCroppedData();
+            });
+
         });
+
+        //function GetCroppedData(image) {
+        //    const cropper = new Cropper(image,
+        //        cropper.getCroppedCanvas().toBlob((blob) => {
+        //            const formData = new FormData();
+        //            formData.append('croppedImage', blob);
+
+        //            // Use `jQuery.ajax` method
+        //            $.ajax('ImageEdiotr.aspx/SaveCroppedData', {
+        //                method: "POST",
+        //                data: formData,
+        //                processData: false,
+        //                contentType: false,
+        //                success() {
+        //                    console.log('Upload success');
+        //                },
+        //                error() {
+        //                    console.log('Upload error');
+        //                },
+        //            });
+        //        })
+        //    );
+        //}
         function ExtractImageSectionDetail(img, selection) {
+
+            if (!selection.width || !selection.height)
+                return;
+
+            // With this two lines i take the proportion between the original size and
+            // the resized img
+            var porcX = img.naturalWidth / img.width;
+            var porcY = img.naturalHeight / img.height
+
             var imagePart = {
-                X1: selection.x1,
-                Y1: selection.y1,
-                X2: selection.x2,
-                Y2: selection.y2,
-                Width: selection.width,
-                Height: selection.height,
+                X1: Math.round(selection.x1 * porcX),
+                Y1: Math.round(selection.y1 * porcY),
+                X2: Math.round(selection.x2 * porcX),
+                Y2: Math.round(selection.y2 * porcY),
+                Width: Math.round(selection.width * porcX),
+                Height: Math.round(selection.height * porcY),
                 OriginalImageId: $("#hdnOriginalImageId").val(),
                 OriginalImageName: $("#hdnOriginalImageName").val()
             };
@@ -37,10 +110,16 @@
             $("#hdnImagePart").val(imgPartJSON);
         }
     </script>
+
+    <style>
+        img {
+            max-width: 100%; /* This rule is very important, please do not ignore this! */
+        }
+    </style>
 </head>
 <body>
     <form id="imgEditorForm" runat="server">
-        
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <h4>Create Section</h4>
             &nbsp &nbsp
@@ -53,7 +132,6 @@
             </div>
         </nav>
         <div class="container" id="imageContainer" runat="server">
-            <%--<img src="images/1.jpg" alt="test" runat="server" id="photo" />--%>
         </div>
         <asp:HiddenField ID="hdnImagePart" runat="server" Value="" />
         <asp:HiddenField ID="hdnOriginalImageId" runat="server" Value="" />

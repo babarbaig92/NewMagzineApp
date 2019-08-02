@@ -10,6 +10,9 @@
     <form id="form1" runat="server">
         <div class="container" id="imageContainer" runat="server">
         </div>
+
+        <asp:HiddenField ID="hdnFromDate" runat="server" Value="" />
+        <asp:HiddenField ID="hdnToDate" runat="server" Value="" />
     </form>
 </body>
 </html>

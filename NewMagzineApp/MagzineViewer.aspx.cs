@@ -1,7 +1,9 @@
 ﻿using NewMagzineApp.AppCode;
 using NewMagzineApp.AppCode.BAL;
+using NewMagzineApp.AppCode.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -23,15 +25,40 @@ namespace NewMagzineApp
             // show list of documents and its pages on front end
             // on clicking a page open the page along with its section
 
+            // Get All Documents
+            GetDocumentsDetail();
+
+
+
             pageImageLocation = Server.MapPath(" ") + "\\MagzineAppFiles\\";
-            int documentId = 1;
+            int documentId = 2;
             int pageNumber = 1;
-            int originalImageId = 64; // id of image whose sections will be fetched            
+            int originalImageId = 89; // id of image whose sections will be fetched            
             byte[] mainPage = GetMagzinePage(documentId, pageNumber);
             List<ImagePart> imageSections = GetMagzinePageSections(originalImageId);
 
-            CleanDirectory(); // remove any already placed files.
+            //CleanDirectory(); // remove any already placed files.
             CreateMapAreaForImagePage(mainPage, imageSections);
+        }
+
+        private void GetDocumentsDetail()
+        {
+            DocumentHelper documentHelper = new DocumentHelper();
+            string fromDate = hdnFromDate.Value;
+            string toDate = hdnToDate.Value;
+            DataTable documents = documentHelper.GetUploadedDocuments(fromDate, toDate);
+            List<DocumentInfo> docs = new List<DocumentInfo>();
+            if(documents.Rows.Count > 0)
+            {
+                foreach(DataRow dataRow in documents.Rows)
+                {
+                    DocumentInfo d = new DocumentInfo();
+                    d.DocumentId = Convert.ToInt32(dataRow["DocumentId"]);
+                    d.DocumentName = Convert.ToString(dataRow["DocumentName"]);
+                    d.UploadDate = Convert.ToDateTime(dataRow["UploadDate"]);
+                    docs.Add(d);
+                }
+            }
         }
 
         private void CreateMapAreaForImagePage(byte[] mainPage, List<ImagePart> imageSections)
@@ -39,8 +66,8 @@ namespace NewMagzineApp
             string mainPageName = Guid.NewGuid().ToString() + ".png"; //can be replaced based on the data we fetch about original image
             System.IO.File.WriteAllBytes(pageImageLocation + mainPageName, mainPage);
             HtmlImage mainImage = new HtmlImage();
-            mainImage.Width = 700;
-            mainImage.Height = 900;
+            //mainImage.Width = 700;
+            //mainImage.Height = 900;
             mainImage.ID = "img_" + imageSections[0].OriginalImageId;
             mainImage.Src = "MagzineAppFiles\\" + mainPageName;
             mainImage.Attributes.Add("alt", "Main Image");

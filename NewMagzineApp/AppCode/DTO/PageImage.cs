@@ -13,5 +13,6 @@ namespace NewMagzineApp.AppCode.DTO
         public int DocumentPageNumber { get; set; }
         public DateTime PageCreationDate { get; set; }
         public byte[] PageBinaryData { get; set; }
+        public DateTime OriginalDocumentUploadDate { get; set; }
     }
 }

@@ -19,8 +19,13 @@ CREATE PROCEDURE InsertDocumentImages
 	@DocumentImageId int = 0 OUTPUT
 AS
 BEGIN
+	declare @documentDate DateTime = null
+	SELECT @documentDate = UploadDate 
+	FROM Document
+	WHERE DocumentId = @OriginalDocumentId	
+
 	INSERT INTO DocumentImage(OriginalDocumentId, DocumentPageNumber, PageCreationDate ,PageBinary)
-	VALUES (@OriginalDocumentId, @DocumentPageNumber, GETDATE(), @PageBinary)
+	VALUES (@OriginalDocumentId, @DocumentPageNumber, @documentDate, @PageBinary)
 
 	SELECT @DocumentImageId = SCOPE_IDENTITY()
 

@@ -71,6 +71,7 @@ namespace NewMagzineApp
         #region Image Section Saving
         protected void btnSavePart_Click(object sender, EventArgs e)
         {
+
             ImagePart imageSection = PrepareImageSectionToSave();
             DocumentHelper documentHelper = new DocumentHelper();
             documentHelper.SaveImageSection(imageSection);
@@ -102,11 +103,29 @@ namespace NewMagzineApp
             Rectangle cloneRect = Rectangle.FromLTRB(left, top, right, bottom);
             Graphics g = Graphics.FromImage(imageSection);
 
+            Point firstCoord = new Point(imgPart.X1, imgPart.Y1);
+            Point secondCoord = new Point(imgPart.X2, imgPart.Y2);
+
+            // srcY = bottom
             // Draw the given area (section) of the source image
             // at location 0,0 on the empty bitmap (imageSection)
             //g.DrawImage(originalMap, 0, 0, cloneRect, GraphicsUnit.Pixel);
 
-            g.DrawImage(originalMap, cloneRect, 0, 0, imgPart.Width, imgPart.Height, GraphicsUnit.Pixel);
+            //working
+            //g.DrawImage(originalMap, cloneRect,0, 0, imgPart.Width, imgPart.Height, GraphicsUnit.Pixel);
+
+            int srcX = cloneRect.X;
+            int srcY = cloneRect.Y;
+
+            g.DrawImage(
+                originalMap,
+                cloneRect,
+                srcX,
+                srcY,
+                imgPart.Width,
+                imgPart.Height,
+                GraphicsUnit.Pixel);
+
 
             /*
             int top = Math.Min(imgPart.Y1, imgPart.Y2);
@@ -130,5 +149,16 @@ namespace NewMagzineApp
         }
 
         #endregion
+
+
+        [System.Web.Services.WebMethod]
+        public static string SaveCroppedData(string name)
+        {
+            return "Hello " + name + Environment.NewLine + "The Current Time is: "
+                + DateTime.Now.ToString();
+        }
+
+
+
     }
 }

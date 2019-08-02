@@ -88,17 +88,5 @@ namespace NewMagzineApp
             string hasImages = hdnHasImages.Value;
             Response.Redirect("ExtractImages.aspx?DocumentId=" + documentId + "&DocumentName=" + documentName + "&HasImages=" + hasImages);
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
