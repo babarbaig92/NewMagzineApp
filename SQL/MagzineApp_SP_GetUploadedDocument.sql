@@ -11,9 +11,12 @@ GO
 -- Description:	<Description,,>
 -- =============================================
 --exec GetUploadedDocuments @FromDate='2019-07-27 13:37:54.980',@ToDate='2019-07-27 13:43:54.980'
---exec GetUploadedDocuments @FromDate='2019-07-27 13:40:54.980',@ToDate=NULL
+--exec GetUploadedDocuments @FromDate='2019-07-27',@ToDate=NULL
 --exec GetUploadedDocuments @FromDate=NULL,@ToDate='2019-07-27 13:43:54.980'
 --exec GetUploadedDocuments @FromDate=NULL,@ToDate=NULL
+--exec GetUploadedDocuments @FromDate='2019-07-31',@ToDate='2019-08-02'
+--exec GetUploadedDocuments @FromDate='07/31/2019',@ToDate='08/02/2019'
+
 
 CREATE PROCEDURE GetUploadedDocuments
 	@FromDate as varchar(200) = '',
@@ -47,6 +50,7 @@ BEGIN
 		SELECT @where += ' UploadDate <= ''' + @ToDate + N''''
 	END
 	SELECT @sql = @select + @from + @where
+	print(@sql)
 	EXECUTE sp_ExecuteSQL @sql, N''
 
 END

@@ -30,15 +30,17 @@ namespace NewMagzineApp
 
 
 
+            /*
             pageImageLocation = Server.MapPath(" ") + "\\MagzineAppFiles\\";
             int documentId = 2;
             int pageNumber = 1;
             int originalImageId = 89; // id of image whose sections will be fetched            
             byte[] mainPage = GetMagzinePage(documentId, pageNumber);
             List<ImagePart> imageSections = GetMagzinePageSections(originalImageId);
+            */
 
             //CleanDirectory(); // remove any already placed files.
-            CreateMapAreaForImagePage(mainPage, imageSections);
+            //CreateMapAreaForImagePage(mainPage, imageSections);
         }
 
         private void GetDocumentsDetail()
@@ -47,19 +49,26 @@ namespace NewMagzineApp
             string fromDate = hdnFromDate.Value;
             string toDate = hdnToDate.Value;
             DataTable documents = documentHelper.GetUploadedDocuments(fromDate, toDate);
-            List<DocumentInfo> docs = new List<DocumentInfo>();
-            if(documents.Rows.Count > 0)
-            {
-                foreach(DataRow dataRow in documents.Rows)
-                {
-                    DocumentInfo d = new DocumentInfo();
-                    d.DocumentId = Convert.ToInt32(dataRow["DocumentId"]);
-                    d.DocumentName = Convert.ToString(dataRow["DocumentName"]);
-                    d.UploadDate = Convert.ToDateTime(dataRow["UploadDate"]);
-                    docs.Add(d);
-                }
-            }
+
+            savedFilesList.DataSource = documents;
+            savedFilesList.DataBind();
+
+            //List<DocumentInfo> docs = new List<DocumentInfo>();
+            //if(documents.Rows.Count > 0)
+            //{
+            //    foreach(DataRow dataRow in documents.Rows)
+            //    {
+            //        DocumentInfo d = new DocumentInfo();
+            //        d.DocumentId = Convert.ToInt32(dataRow["DocumentId"]);
+            //        d.DocumentName = Convert.ToString(dataRow["DocumentName"]);
+            //        d.UploadDate = Convert.ToDateTime(dataRow["UploadDate"]);
+            //        docs.Add(d);
+            //    }
+            //}
+            //return docs;
         }
+
+        /*
 
         private void CreateMapAreaForImagePage(byte[] mainPage, List<ImagePart> imageSections)
         {
@@ -111,6 +120,19 @@ namespace NewMagzineApp
             string[] filePaths = Directory.GetFiles(pageImageLocation);
             foreach (string filePath in filePaths)
                 File.Delete(filePath);
+        }
+
+        */
+
+        protected void btnRedirectToPageViewer_Click(object sender, ImageClickEventArgs e)
+        {
+            Response.Write("T");
+            Response.End();
+        }
+
+        protected void btnLoadMagzineDocs_Click(object sender, ImageClickEventArgs e)
+        {
+            GetDocumentsDetail();
         }
     }
 }
